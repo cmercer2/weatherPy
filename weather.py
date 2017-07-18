@@ -4,8 +4,7 @@ Get Weather info for a requested location, using Dark Sky API
 """
 import ConfigParser
 import json
-import Tkinter
-import pprint
+from Tkinter import *
 import math
 
 import requests
@@ -36,5 +35,4 @@ WTHR = get_api_response()
 
 CUR_TEMP = int(math.ceil(WTHR["currently"]["temperature"]))
 
-print "The Current Temperature in {city} is {temp}°".format(city=USER_CITY,temp=CUR_TEMP) 
-
+print "The Current Temperature in {city} is {temp}°F".format(city=USER_CITY,temp=CUR_TEMP) 
