@@ -45,13 +45,18 @@ def get_api_response(lat, lon):
     parsed = json.loads(api_response.text)
     #write response to file, just for development
     with open("weather.json", "w+") as openfile:
-        json.dump(parsed, openfile, indent=4)
+       json.dump(parsed, openfile, indent=4)
     return parsed
 
-def get_date_time(timestamp):
+def get_date(timestamp):
     """ get date string from timestamp """
-    date_time = datetime.datetime.fromtimestamp(int(timestamp)).strftime('%A %B %d, %Y')
-    return date_time
+    date = datetime.datetime.fromtimestamp(int(timestamp)).strftime('%A %B %d, %Y')
+    return date
+
+def get_time(timestamp):
+    """ get time string from timestamp"""
+    time = datetime.datetime.fromtimestamp(int(timestamp)).strftime('%I:%M %p')
+    return time
 
 #Get JSON
 WTHR = get_api_response(LAT, LONG)
@@ -84,7 +89,6 @@ def get_cur_conditions():
 def get_weekly_forecast():
     """print weekly forecast"""
     days = WTHR["daily"]["data"]
-
     print "==========WEEKLY FORECAST=========="
     print WTHR["daily"]["summary"]
     for i in range(len(days)):
@@ -92,18 +96,39 @@ def get_weekly_forecast():
         min_temp = days[i]["temperatureMin"]
         max_temp = days[i]["temperatureMax"]
         forecast_string = "Forecast: {s}".format(s=summary)
-        time_stamp = days[i]["time"]
-        date = get_date_time(time_stamp)
-       
+        date = get_date(days[i]["time"])
         print "-" * len(forecast_string)
         print date
         print forecast_string
         print "High of {high}{d}, Low of {low}{d}".format(high=max_temp, low=min_temp, d=DEG)
         print "-" * len(forecast_string)
 
+def get_hourly_forecast():
+    """print hourly forecast"""
+    hour = WTHR["hourly"]["data"]
+    print "==========HOURLY FORECAST=========="
+    print WTHR["hourly"]["summary"]
+    for i in range(len(hour)):
+        temp = hour[i]["temperature"]
+        summary = hour[i]["summary"]
+        forecast = "Forecast: {s}".format(s=summary)
+        if hour[i]["precipProbability"] == 0:
+            precip_string = "No chance of precipitation"
+        else:
+            precip_prob = hour[i]["precipProbability"] * 100
+            precip_type = hour[i]["precipType"]
+            precip_string = "{c}% of {p}".format(c=precip_prob, p=precip_type)
+        print "-" * len(forecast)
+        print get_time(hour[i]["time"])
+        print "Temperature: {t}".format(t=temp)
+        print forecast
+        print precip_string
+        print "-" * len(forecast)
+
+
 if USER_CHOICE[1] == 0:
     get_cur_conditions()
 elif USER_CHOICE[1] == 1:
     get_weekly_forecast()
 else:
-    print "HOURLY CONDITIONS"
+    get_hourly_forecast()
