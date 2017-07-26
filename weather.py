@@ -10,6 +10,7 @@ import datetime
 import requests
 from geopy.geocoders import Nominatim
 from pick import pick
+import emoji
 
 CONFIG = ConfigParser.RawConfigParser()
 CONFIG.read('CONFIG.cfg')
@@ -73,14 +74,40 @@ def user_options(opt):
 
 USER_CHOICE = user_options(USER_OPT)
 
+def get_weather_emoji(icon):
+    """ get 'icon' from json, return emoji """
+    if icon == "clear-day":
+        weather_icon = emoji.emojize(':sun_with_face:', use_aliases=True)
+    elif icon == "clear-night":
+        weather_icon = emoji.emojize(":crescent_moon:", use_aliases=True)
+    elif icon == "rain":
+        weather_icon = emoji.emojize(":umbrella:", use_aliases=True)
+    elif icon == "snow":
+        weather_icon = emoji.emojize(":snowflake:", use_aliases=True)
+    elif icon == "sleet":
+        weather_icon = emoji.emojize(":sweat_drops:", use_aliases=True)
+    elif icon == "wind":
+        weather_icon = emoji.emojize(":dash:", use_aliases=True)
+    elif icon == "fog":
+        weather_icon = emoji.emojize(":foggy:", use_aliases=True)
+    elif icon == "cloudy":
+        weather_icon = emoji.emojize(":cloud:", use_aliases=True)
+    elif icon == "partly-cloudy-day" or icon == "partly-cloudy-night":
+        weather_icon = emoji.emojize(":partly_sunny:", use_aliases=True)
+    else:
+        weather_icon = emoji.emojize(":earth_americas:", use_aliases=True)
+    return weather_icon
+
 def get_cur_conditions():
     """ print current weather """
     cur_temp = int(math.ceil(WTHR["currently"]["temperature"]))
     cur_cond = WTHR["currently"]["summary"]
     precip_prob = WTHR["currently"]["precipProbability"]
     humidity = WTHR["currently"]["humidity"] * 100
+    icon = get_weather_emoji(WTHR["currently"]["icon"])
     print "==========CURRENT CONDITIONS=========="
     print get_full_location(USER_LOC)
+    print icon
     print "Temperature: {temp}".format(temp=cur_temp)
     print "Conditions: {cond}".format(cond=cur_cond)
     print "Precipitation Chance: {pp}%".format(pp=precip_prob)
@@ -97,8 +124,10 @@ def get_weekly_forecast():
         max_temp = days[i]["temperatureMax"]
         forecast_string = "Forecast: {s}".format(s=summary)
         date = get_date(days[i]["time"])
+        icon = get_weather_emoji(days[i]["icon"])
         print "-" * len(forecast_string)
         print date
+        print icon
         print forecast_string
         print "High of {high}{d}, Low of {low}{d}".format(high=max_temp, low=min_temp, d=DEG)
         print "-" * len(forecast_string)
@@ -112,14 +141,16 @@ def get_hourly_forecast():
         temp = hour[i]["temperature"]
         summary = hour[i]["summary"]
         forecast = "Forecast: {s}".format(s=summary)
+        icon = get_weather_emoji(hour[i]["icon"])
         if hour[i]["precipProbability"] == 0:
             precip_string = "No chance of precipitation"
         else:
             precip_prob = hour[i]["precipProbability"] * 100
             precip_type = hour[i]["precipType"]
-            precip_string = "{c}% of {p}".format(c=precip_prob, p=precip_type)
+            precip_string = "{c}% chance of {p}".format(c=precip_prob, p=precip_type)
         print "-" * len(forecast)
         print get_time(hour[i]["time"])
+        print icon
         print "Temperature: {t}".format(t=temp)
         print forecast
         print precip_string
