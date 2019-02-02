@@ -46,7 +46,7 @@ def get_api_response(lat, lon):
     parsed = json.loads(api_response.text)
     #write response to file, just for development
     with open("weather.json", "w+") as openfile:
-       json.dump(parsed, openfile, indent=4)
+        json.dump(parsed, openfile, indent=4)
     return parsed
 
 def get_date(timestamp):
@@ -68,7 +68,7 @@ def user_options(opt):
     """ ask user to pick one option for weather data """
     title = "What weather information do you want?"
     options = opt
-    indicator = "=>"
+    indicator = "->"
     choice = pick(options, title, indicator)
     return choice
 
@@ -155,7 +155,6 @@ def get_hourly_forecast():
         print forecast
         print precip_string
         print "-" * len(forecast)
-
 
 if USER_CHOICE[1] == 0:
     get_cur_conditions()
