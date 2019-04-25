@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
+#!/usr/bin/env python
 """
 Get Weather info for a requested location, using Dark Sky API
 """
-import ConfigParser
+import configparser
 import json
 import math
 import datetime
@@ -12,13 +13,13 @@ from geopy.geocoders import Nominatim
 from pick import pick
 import emoji
 
-CONFIG = ConfigParser.RawConfigParser()
+CONFIG = configparser.ConfigParser()
 CONFIG.read('CONFIG.cfg')
 API_KEY = CONFIG.get('APIsection', 'DSkey')
 GEO = Nominatim()
 DEG = "°"
 #Ask user to input a location
-USER_LOC = raw_input("Where do you want weather information from? ")
+USER_LOC = input("Where do you want weather information from? ")
 
 def convert_lat_long(loc):
     """ use geopy to convert requested location into latitude and longitude needed for api call """
@@ -33,8 +34,8 @@ def get_full_location(loc):
 while True:
     try:
         LAT, LONG = convert_lat_long(USER_LOC)
-    except StandardError:
-        print "Error processing your request. Trying again"
+    except Exception:
+        print("Error processing your request. Trying again")
         continue
     else:
         break
@@ -105,19 +106,19 @@ def get_cur_conditions():
     precip_prob = WTHR["currently"]["precipProbability"]
     humidity = WTHR["currently"]["humidity"] * 100
     icon = get_weather_emoji(WTHR["currently"]["icon"])
-    print "==========CURRENT CONDITIONS=========="
-    print get_full_location(USER_LOC)
-    print icon
-    print "Temperature: {temp}".format(temp=cur_temp)
-    print "Conditions: {cond}".format(cond=cur_cond)
-    print "Precipitation Chance: {pp}%".format(pp=precip_prob)
-    print "humidity: {h}%".format(h=humidity)
+    print("==========CURRENT CONDITIONS==========")
+    print(get_full_location(USER_LOC))
+    print(icon)
+    print("Temperature: {temp}".format(temp=cur_temp))
+    print("Conditions: {cond}".format(cond=cur_cond))
+    print("Precipitation Chance: {pp}%".format(pp=precip_prob))
+    print("humidity: {h}%".format(h=humidity))
 
 def get_weekly_forecast():
     """print weekly forecast"""
     days = WTHR["daily"]["data"]
-    print "==========WEEKLY FORECAST=========="
-    print WTHR["daily"]["summary"]
+    print("==========WEEKLY FORECAST==========")
+    print(WTHR["daily"]["summary"])
     for i in range(len(days)):
         summary = days[i]["summary"]
         min_temp = days[i]["temperatureMin"]
@@ -125,18 +126,18 @@ def get_weekly_forecast():
         forecast_string = "Forecast: {s}".format(s=summary)
         date = get_date(days[i]["time"])
         icon = get_weather_emoji(days[i]["icon"])
-        print "-" * len(forecast_string)
-        print date
-        print icon
-        print forecast_string
-        print "High of {high}{d}, Low of {low}{d}".format(high=max_temp, low=min_temp, d=DEG)
-        print "-" * len(forecast_string)
+        print("-" * len(forecast_string))
+        print(date)
+        print(icon)
+        print(forecast_string)
+        print("High of {high}{d}, Low of {low}{d}".format(high=max_temp, low=min_temp, d=DEG))
+        print("-" * len(forecast_string))
 
 def get_hourly_forecast():
     """print hourly forecast"""
     hour = WTHR["hourly"]["data"]
-    print "==========HOURLY FORECAST=========="
-    print WTHR["hourly"]["summary"]
+    print("==========HOURLY FORECAST==========")
+    print(WTHR["hourly"]["summary"])
     for i in range(len(hour)):
         temp = hour[i]["temperature"]
         summary = hour[i]["summary"]
@@ -148,13 +149,13 @@ def get_hourly_forecast():
             precip_prob = hour[i]["precipProbability"] * 100
             precip_type = hour[i]["precipType"]
             precip_string = "{c}% chance of {p}".format(c=precip_prob, p=precip_type)
-        print "-" * len(forecast)
-        print get_time(hour[i]["time"])
-        print icon
-        print "Temperature: {t}".format(t=temp)
-        print forecast
-        print precip_string
-        print "-" * len(forecast)
+        print("-" * len(forecast))
+        print(get_time(hour[i]["time"]))
+        print(icon)
+        print("Temperature: {t}".format(t=temp))
+        print(forecast)
+        print(precip_string)
+        print("-" * len(forecast))
 
 if USER_CHOICE[1] == 0:
     get_cur_conditions()
