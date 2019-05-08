@@ -7,17 +7,20 @@ import configparser
 import json
 import math
 import datetime
-
+import ssl
+import certifi
 import requests
 from geopy.geocoders import Nominatim
 from pick import pick
 import emoji
 
+ctx = ssl.create_default_context(cafile=certifi.where())
 CONFIG = configparser.ConfigParser()
 CONFIG.read('CONFIG.cfg')
 API_KEY = CONFIG.get('APIsection', 'DSkey')
-GEO = Nominatim()
+GEO = Nominatim(user_agent="weatherPy", ssl_context=ctx)
 DEG = "°"
+
 #Ask user to input a location
 USER_LOC = input("Where do you want weather information from? ")
 
