@@ -1,4 +1,4 @@
 
-*.cfg
+*.ini
 weather.json
 .vscode/settings.json

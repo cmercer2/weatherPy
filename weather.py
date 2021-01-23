@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Get Weather info for a requested location, using Dark Sky API
 """
@@ -16,8 +16,8 @@ import emoji
 
 ctx = ssl.create_default_context(cafile=certifi.where())
 CONFIG = configparser.ConfigParser()
-CONFIG.read('CONFIG.cfg')
-API_KEY = CONFIG.get('APIsection', 'DSkey')
+CONFIG.read('weatherpy/CONFIG.ini')
+API_KEY = CONFIG['APIsection']['DSkey']
 GEO = Nominatim(user_agent="weatherPy", ssl_context=ctx)
 DEG = "°"
 
