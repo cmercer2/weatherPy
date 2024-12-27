@@ -15,9 +15,11 @@ from pick import pick
 import emoji
 
 ctx = ssl.create_default_context(cafile=certifi.where())
+
+#read config file containing API key for darksky
 CONFIG = configparser.ConfigParser()
-CONFIG.read('weatherpy/CONFIG.ini')
-API_KEY = CONFIG['APIsection']['DSkey']
+CONFIG.read('CONFIG.ini')
+API_KEY = CONFIG['APIsection']['PWkey']
 GEO = Nominatim(user_agent="weatherPy", ssl_context=ctx)
 DEG = "°"
 
@@ -45,7 +47,7 @@ while True:
 
 def get_api_response(lat, lon):
     """ setup api url and return response """
-    url = "https://api.forecast.io/forecast/{key}/{la},{lo}".format(key=API_KEY, la=lat, lo=lon)
+    url = "https://api.pirateweather.net/forecast/{key}/{la},{lo}".format(key=API_KEY, la=lat, lo=lon)
     api_response = requests.request("GET", url)
     parsed = json.loads(api_response.text)
     #write response to file, just for development
@@ -81,25 +83,25 @@ USER_CHOICE = user_options(USER_OPT)
 def get_weather_emoji(icon):
     """ get 'icon' from json, return emoji """
     if icon == "clear-day":
-        weather_icon = emoji.emojize(':sun_with_face:', use_aliases=True)
+        weather_icon = emoji.emojize(':sun_with_face:', language='alias')
     elif icon == "clear-night":
-        weather_icon = emoji.emojize(":crescent_moon:", use_aliases=True)
+        weather_icon = emoji.emojize(":crescent_moon:", language='alias')
     elif icon == "rain":
-        weather_icon = emoji.emojize(":umbrella:", use_aliases=True)
+        weather_icon = emoji.emojize(":umbrella:", language='alias')
     elif icon == "snow":
-        weather_icon = emoji.emojize(":snowflake:", use_aliases=True)
+        weather_icon = emoji.emojize(":snowflake:", language='alias')
     elif icon == "sleet":
-        weather_icon = emoji.emojize(":sweat_drops:", use_aliases=True)
+        weather_icon = emoji.emojize(":sweat_drops:", language='alias')
     elif icon == "wind":
-        weather_icon = emoji.emojize(":dash:", use_aliases=True)
+        weather_icon = emoji.emojize(":dash:", language='alias')
     elif icon == "fog":
-        weather_icon = emoji.emojize(":foggy:", use_aliases=True)
+        weather_icon = emoji.emojize(":foggy:", language='alias')
     elif icon == "cloudy":
-        weather_icon = emoji.emojize(":cloud:", use_aliases=True)
+        weather_icon = emoji.emojize(":cloud:", language='alias')
     elif icon == "partly-cloudy-day" or icon == "partly-cloudy-night":
-        weather_icon = emoji.emojize(":partly_sunny:", use_aliases=True)
+        weather_icon = emoji.emojize(":partly_sunny:", language='alias')
     else:
-        weather_icon = emoji.emojize(":earth_americas:", use_aliases=True)
+        weather_icon = emoji.emojize(":earth_americas:", language='alias')
     return weather_icon
 
 def get_cur_conditions():
